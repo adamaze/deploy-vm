@@ -1,0 +1,64 @@
+name: Image Link Checker
+
+on:
+  schedule:
+    - cron: '0 4 * * *' # Run daily
+  workflow_dispatch: # Allow manual triggering
+  
+permissions:
+  contents: read
+  issues: write
+  
+jobs:
+  link-checker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run link checker
+        id: link-checker
+        run: |
+          set +e
+          cloud_image_urls=$(grep IMAGE_URL= deploy-vm.sh |  awk -F\" '{print $2}')
+          echo "Checking cloud image URLs:"
+          for url in $cloud_image_urls; do
+            http_code=$(curl --silent \
+                 --head \
+                 --fail \
+                 --max-time 10 \
+                 --retry 3 \
+                 --output /dev/null \
+                 --write-out "%{http_code}\n" \
+                 --location \
+                 "$url")
+            echo "$http_code $url"
+            if [[ $http_code != "200" ]]; then
+              echo "$url" >> failing_urls.log
+            fi
+          done
+          
+          if [[ -e failing_urls.log ]]; then
+            echo "FAILURES_FOUND=true" >> $GITHUB_ENV
+            echo "Found failing URLs:"
+            cat failing_urls.log
+          else
+            echo "All URLs are valid!"
+          fi
+      
+      - name: Create Issue
+        if: env.FAILURES_FOUND == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const failingUrls = fs.readFileSync('failing_urls.log', 'utf8').trim();
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Cloud image URL fail`,
+              body: `${failingUrls}
+              Please check the [Actions tab](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for the full report.`,
+              labels: ['bad-link']
+            })

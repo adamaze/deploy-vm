@@ -30,6 +30,7 @@ ubuntu2404
 ubuntu2410
 ubuntu2504
 ```
+A github action will check each image URL daily, and auto-create an issue to report bad links, as distros occasionally change paths of where images are hosted.
 ## Usage
 
 ### Basic
