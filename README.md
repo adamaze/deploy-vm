@@ -1,5 +1,6 @@
 # deploy-vm
 
+![Workflow Status](https://github.com/adamaze/deploy-vm/actions/workflows/cloud_image_health_check.yml/badge.svg)  
 A simple bash script to easily deploy multiple distros on a KVM host.  
 
 ## Explanation
@@ -30,7 +31,7 @@ ubuntu2404
 ubuntu2410
 ubuntu2504
 ```
-A github action will check each image URL daily, and auto-create an issue to report bad links, as distros occasionally change paths of where images are hosted.
+A Github Action checks each image URL daily, and auto-creates an issue to report bad links, as distros occasionally change paths of where images are hosted.
 ## Usage
 
 ### Basic
