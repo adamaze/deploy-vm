@@ -108,6 +108,24 @@ function load_settings() {
         exit 1
     fi
 }
+function generate_server_name() {
+  wordlist="/usr/share/dict/words"
+
+  # Check if wordlist exists
+  if [[ ! -f "$wordlist" ]]; then
+    echo "wordlist not found. You may need to install a package, or specify a hostname with -h" >&2
+    echo "sudo dnf install words  # For Red Hat/Rocky/Alma Linux" >&2
+    echo "sudo apt install wamerican  # For Debian/Ubuntu" >&2
+    exit 1
+  fi
+
+  # Filter for appropriate words (4-8 chars, alphabetic only)
+  hostname_word_1=$(grep -E '^[a-z]{4,8}$' "$wordlist" | shuf -n 1)
+  hostname_word_2=$(grep -E '^[a-z]{4,8}$' "$wordlist" | shuf -n 1)
+
+  hostname_to_build="${os}-${hostname_word_1}-${hostname_word_2}"
+}
+
 function validate_input() {
     # check if name is valid
     if [[ ! "$hostname_to_build" =~ ^[a-zA-Z0-9-]+$ ]]; then
@@ -435,6 +453,12 @@ fi
 if [[ -z "${hostname_to_build}" ]]; then
     usage
 fi
+if [[ "${os}" == "random" ]]; then
+    os=$(echo "$supported_os_list" | grep . | sort -R | head -1)
+fi
+if [[ "${hostname_to_build}" == "random" ]]; then
+    generate_server_name
+fi
 #
 if [[ $force != "true" ]]; then
     if ! ask "Are you sure you want to deply the following VM:
@@ -454,4 +478,4 @@ cache_image
 create_disk
 create_cloud_init_iso
 virt_install
-echo All done
+echo Finished building $hostname_to_build

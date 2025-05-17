@@ -55,6 +55,13 @@ This creates a VM named "my-new-vm" with:
 - Ubuntu 24.04 operating system
 - doesnt prompt you to review
 
+### Chaotic
+```bash
+./deploy-vm.sh -h random -o random -y
+```
+Use default settings, except pick a random OS and hostname
+
+
 ### I have too much CPU/RAM and I dont know what to do with it all...
 
 ```bash
