@@ -1,10 +1,12 @@
-# deploy-vm
+# deploy-vm (libvirt/KVM)
 
 ![Workflow Status](https://github.com/adamaze/deploy-vm/actions/workflows/cloud_image_health_check.yml/badge.svg)  
-A simple bash script to easily deploy multiple distros on a KVM host.  
+tl;dr:  
+`./deploy-vm.sh -h server01 -o rocky9`  
+Deploy a rocky9 VM named server01 from the lastest cloud image, and include your ssh key for easy access
 
 ## Explanation
-There are many ways do deploy VMs with libvirt/KVM, but I wanted something super simple that I could wrap my head around, keep up to date easily, and I wanted it to be fast.
+There are many ways to deploy VMs with libvirt/KVM, but I wanted something super simple that I could wrap my head around, keep up to date easily, and I wanted it to be fast.
 For example, when the image is already cached, deploying centos-stream10 takes 8 seconds, and the vm is up on the network running user-data 42 seconds later.
 When validating all distros, I can deploy one after the other and be done with the 17 currently supported versions in under 5 minutes.
 
@@ -35,15 +37,13 @@ A Github Action checks each image URL daily, and auto-creates an issue to report
 ## Usage
 
 ### Basic
-
 ```bash
 ./deploy-vm.sh -h my-new-vm
 ```
 
-This will create a VM using the default settings specified in `~/.config/deploy-vm/default.vars`.
+This will create a VM named "my-new-vm" using the default settings specified in `~/.config/deploy-vm/default.vars`.
 
 ### Advanced
-
 ```bash
 ./deploy-vm.sh -h my-new-vm -c 4 -r 8 -d 50 -o ubuntu2404 -y
 ```
@@ -61,15 +61,13 @@ This creates a VM named "my-new-vm" with:
 ```
 Use default settings, except pick a random OS and hostname
 
-
 ### I have too much CPU/RAM and I dont know what to do with it all...
-
 ```bash
 for os in $(./deploy-vm.sh -l); do ./deploy-vm.sh -y -o $os -h test-$os; done
 ```
 Deploy one of each supported OS
 
-### Options
+### All Options
 
 - `-h` - Hostname/VM name (required)
 - `-c` - Number of CPU cores (default: 2)
@@ -79,11 +77,6 @@ Deploy one of each supported OS
 - `-y` - Skip confirmation prompt
 - `-l` - List available OS options
 
-### List Available OS Options
-
-```bash
-./deploy-vm.sh -l
-```
 
 ## Configuration
 
