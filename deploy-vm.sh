@@ -160,9 +160,20 @@ function validate_input() {
         echo "ERROR: You asked for a ${disk_size}GB disk, but $VM_IMAGE_DIR only has ${available_space}GB "
         ((validation_errors++))
     fi
+    # check if os is valid
+    if [[ ! "$supported_os_list" =~ (^|[[:space:]])"$os"($|[[:space:]]) ]]; then
+        echo "ERROR: $os is not a supported OS"
+        echo See supported OS list:
+        echo "$supported_os_list"
+        echo 
+        ((validation_errors++))
+    fi
     if [[ $validation_errors -gt 0 ]]; then
-        echo "Validation errors found. exiting..."
-        exit 1
+        if [[ $validation_errors -gt 1 ]]; then
+            errors_plural="s"
+        fi
+            echo "$validation_errors validation error${errors_plural} found. exiting..."
+            exit 1
     fi
 }
 function cache_image() {
@@ -460,6 +471,7 @@ if [[ "${hostname_to_build}" == "random" ]]; then
     generate_server_name
 fi
 #
+validate_input
 if [[ $force != "true" ]]; then
     if ! ask "Are you sure you want to deply the following VM:
     username: $user
@@ -473,7 +485,6 @@ if [[ $force != "true" ]]; then
     fi
 fi
 #
-validate_input
 cache_image
 create_disk
 create_cloud_init_iso
