@@ -21,6 +21,7 @@ rocky8
 rocky9
 almalinux8
 almalinux9
+almalinux10
 opensuse15-6
 debian11
 debian12
