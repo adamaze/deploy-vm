@@ -11,6 +11,7 @@ rocky8
 rocky9
 almalinux8
 almalinux9
+almalinux10
 opensuse15-6
 debian11
 debian12
@@ -209,6 +210,14 @@ function cache_image() {
             OS_VARIANT="almalinux9"
             IMAGE_URL="https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
             IMAGE_CHECKSUM="$(curl --silent https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/CHECKSUM | grep $(basename $IMAGE_URL) | awk '{print $1}')"
+            ;;
+        almalinux10)
+            OS_VARIANT="$(osinfo-query os | grep '^ almalinux10' | awk '{print $1}')"
+            if [[ -z $OS_VARIANT ]]; then
+                OS_VARIANT="$(osinfo-query os | grep ' AlmaLinux ' | sort -n -t\| -k3 | tail -1 | awk '{print $1}')"
+            fi
+            IMAGE_URL="https://repo.almalinux.org/almalinux/10/cloud/x86_64/images/AlmaLinux-10-GenericCloud-latest.x86_64.qcow2"
+            IMAGE_CHECKSUM="$(curl --silent https://repo.almalinux.org/almalinux/10/cloud/x86_64/images/CHECKSUM | grep $(basename $IMAGE_URL) | awk '{print $1}')"
             ;;
         opensuse15-6)
             OS_VARIANT="$(osinfo-query os | grep opensuse15.6 | awk '{print $1}')"
