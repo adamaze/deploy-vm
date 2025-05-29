@@ -13,28 +13,19 @@ When validating all distros, I can deploy one after the other and be done with t
 ### WARNING
 I don't use this script professionally, so I may be doing some things here in a non-ideal way... it happens to be working for me, so I'm running with it. If you think you can point out something I'm doing wrong, with an easy fix, or explanation, I'm all ears in the Issues tab
 
-## Supported OS Verions
-```
-centos-stream9
-centos-stream10
-rocky8
-rocky9
-almalinux8
-almalinux9
-almalinux10
-opensuse15-6
-debian11
-debian12
-debiansid
-fedora40
-fedora41
-fedora42
-ubuntu2204
-ubuntu2404
-ubuntu2410
-ubuntu2504
-```
-A Github Action checks each image URL daily, and auto-creates an issue to report bad links, as distros occasionally change paths of where images are hosted.
+## Supported OS Versions
+
+| Distribution | Versions |
+|--------------|----------|
+| CentOS Stream | 9, 10 |
+| Rocky Linux | 8, 9 |
+| AlmaLinux | 8, 9, 10 |
+| openSUSE Leap | 15.6 |
+| Debian | 11, 12, sid |
+| Fedora | 40, 41, 42 |
+| Ubuntu | 22.04, 24.04, 24.10, 25.04 |  
+
+[This Github Action](https://github.com/adamaze/deploy-vm/actions/workflows/cloud_image_health_check.yml) checks each image URL daily, and auto-creates an issue to report bad links, as distros occasionally change paths of where images are hosted.
 ## Usage
 
 ### Basic
