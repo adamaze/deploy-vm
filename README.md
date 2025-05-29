@@ -6,9 +6,9 @@ tl;dr:
 Deploy a rocky9 VM named server01 from the lastest cloud image, and include your ssh key for easy access
 
 ## Explanation
-There are many ways to deploy VMs with libvirt/KVM, but I wanted something super simple that I could wrap my head around, keep up to date easily, and I wanted it to be fast.
-For example, when the image is already cached, deploying centos-stream10 takes 8 seconds, and the vm is up on the network running user-data 42 seconds later.
-When validating all distros, I can deploy one after the other and be done with the 17 currently supported versions in under 5 minutes.
+There are many ways to deploy VMs with libvirt/KVM, but I wanted something super simple that I could wrap my head around, keep up to date easily, and I wanted it to be fast.  
+For example, when the image is already cached, deploying centos-stream10 takes 8 seconds, and the vm is up on the network running user-data 42 seconds later.  
+When validating all distros, I can deploy one after the other and be done with the 18 currently supported versions in under 5 minutes.
 
 ### WARNING
 I don't use this script professionally, so I may be doing some things here in a non-ideal way... it happens to be working for me, so I'm running with it. If you think you can point out something I'm doing wrong, with an easy fix, or explanation, I'm all ears in the Issues tab
