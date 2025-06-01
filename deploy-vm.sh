@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
+script_version=1.3.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -29,7 +30,35 @@ ubuntu2504
 #
 # FUNCTIONS
 #
-ask() {
+function check_required_commands() {
+    missing_commands=()
+    required_commands=(
+        "curl"
+        "ping"
+        "virsh"
+        "wget"
+        "qemu-img"
+        "genisoimage"
+        "virt-install"
+        "osinfo-query"
+    )
+    # Check required commands
+    for cmd in "${required_commands[@]}"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            missing_commands+=("$cmd")
+        fi
+    done
+    # Report missing required commands
+    if [[ ${#missing_commands[@]} -gt 0 ]]; then
+        echo "ERROR: The following required commands are missing:"
+        for cmd in "${missing_commands[@]}"; do
+            echo "  - $cmd"
+        done
+        exit 1
+    fi
+}
+#
+function ask() {
     local prompt default reply
 
     if [[ ${2:-} = 'Y' ]]; then
@@ -66,9 +95,11 @@ ask() {
 }
 #
 function usage() {
+    echo "deploy-vm version $script_version"
     echo "Usage: $0 -h hostname_to_build | [-c cpu_core_count] [-r ram_in_GB] [-d disk_size] [-o os]" 1>&2
     echo "  -l   List avilable OS versions." 1>&2
     echo "  -F   Skip the y/n prompt when deploying." 1>&2
+    echo "  -V   Show version" 1>&2
     exit 1
  }
 #
@@ -168,6 +199,23 @@ function validate_input() {
         echo "$supported_os_list"
         echo 
         ((validation_errors++))
+    fi
+    # Validate network interface
+    if [[ ! -d "/sys/class/net/$BRIDGE" ]]; then
+        echo "ERROR: Network interface $BRIDGE does not exist"
+        ((validation_errors++))
+    else
+        # Check if it's actually a bridge
+        if [[ -d "/sys/class/net/$BRIDGE/bridge" ]]; then
+            bridge_operstate=$(cat /sys/class/net/$BRIDGE/operstate 2>/dev/null || echo "unknown")
+            if [[ "$bridge_operstate" != "up" ]]; then
+                echo "ERROR: Bridge $BRIDGE is not up - VMs may not get network connectivity"
+                ((validation_errors++))
+            fi
+        else
+            echo "ERROR: $BRIDGE exists but is not a bridge interface"
+            ((validation_errors++))
+        fi
     fi
     if [[ $validation_errors -gt 0 ]]; then
         if [[ $validation_errors -gt 1 ]]; then
@@ -425,6 +473,10 @@ function virt_install() {
         --graphics vnc,listen=0.0.0.0 \
         --noautoconsole \
         --wait 0
+    if [[ $? -gt 0 ]]; then
+        echo Failed to deploy $hostname_to_build
+        exit 1
+    fi
 }
 #
 if [[ ! -e $var_file ]]; then
@@ -433,9 +485,10 @@ if [[ ! -e $var_file ]]; then
 fi
 #
 ################################################
+check_required_commands
 load_settings
 #
-while getopts ":h:c:r:d:o:yl" o; do
+while getopts ":h:c:r:d:o:ylV" o; do
     case "${o}" in
         h)
             hostname_to_build=${OPTARG}
@@ -457,6 +510,10 @@ while getopts ":h:c:r:d:o:yl" o; do
             ;;
 		l)
 			list=true
+			;;
+		V)
+			echo $script_version
+            exit
 			;;
         *)
             usage
