@@ -94,7 +94,6 @@ ssh_pub_key_file=
 BRIDGE=br0
 user_data_file=/root/.config/create-vm/user-data.sh
 github_user=adamaze
-runcmd=
 ```
 
 ### SSH Key Configuration
