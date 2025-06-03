@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.3.0
+script_version=1.4.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -116,7 +116,6 @@ os=rocky9
 ssh_pub_key_file=
 BRIDGE=br0
 github_user=
-runcmd=
 user_data_file=
 " > $var_file
 }
@@ -435,9 +434,16 @@ EOF
         done <<< "$github_ssh_keys"
     fi
     if [[ -n $user_data_file ]]; then
-        echo "Adding contents of $user_data_file to runcmd list"
+        user_data_file_path=$VM_IMAGE_DIR/init/user-data.sh
+        # I've had some odd issues where simply smushing a standard bash script into the runcmd section of the user-data doesnt work, so here, we are copying the script file itself into the ISO, and then running it from there.
+        cp $user_data_file $user_data_file_path
+        chmod +x $user_data_file_path
+        echo "Setting $user_data_file to be run on first boot"
         echo "runcmd:" >> $VM_IMAGE_DIR/init/user-data
-        cat $user_data_file | sed 's/^/ - /' >> $VM_IMAGE_DIR/init/user-data
+        echo "  - mkdir -p /mnt/cdrom
+  - mount /dev/sr0 /mnt/cdrom
+  - /mnt/cdrom/user-data.sh
+  - umount /mnt/cdrom" >> $VM_IMAGE_DIR/init/user-data
     fi
 
     echo "Generating the cidata ISO file $VM_IMAGE_DIR/images/${hostname_to_build}-cidata.iso"
@@ -448,7 +454,7 @@ EOF
             -volid cidata \
             -rational-rock \
             -joliet \
-            user-data meta-data 2>&1)
+            user-data meta-data $user_data_file_path 2>&1)
     )
 }
 #
