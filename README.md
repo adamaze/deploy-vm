@@ -16,9 +16,12 @@ I don't use this script professionally, so I may be doing some things here in a 
 ## Supported OS for KVM host
 | Distribution | Versions |
 |--------------|----------|
+| AlmaLinux | 8, 9, 10 |  
+| CentOS Stream | 9, 10 |  
+| Fedora | 40, 41, 42 |  
 | Rocky Linux | 8, 9 |  
 
-I'm sure it will work on more, this is just what I have validated so far.  
+It will likely work on more, this is just what I have validated so far.  
 
 ## Supported OS Versions
 | Distribution | Versions |
