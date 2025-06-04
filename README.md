@@ -18,6 +18,7 @@ I don't use this script professionally, so I may be doing some things here in a 
 |--------------|----------|
 | AlmaLinux | 8, 9, 10 |  
 | CentOS Stream | 9, 10 |  
+| Fedora | 40, 41, 42 |  
 | Rocky Linux | 8, 9 |  
 
 It will likely work on more, this is just what I have validated so far.  
