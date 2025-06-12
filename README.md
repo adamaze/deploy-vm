@@ -16,7 +16,7 @@ I don't use this script professionally, so I may be doing some things here in a 
 ## Supported OS for KVM host
 | Distribution | Versions |
 |--------------|----------|
-| AlmaLinux | 8, 9, 10 |  
+| AlmaLinux | 8, 9 |  
 | CentOS Stream | 9, 10 |  
 | Fedora | 40, 41, 42 |  
 | Rocky Linux | 8, 9 |  
@@ -27,7 +27,7 @@ It will likely work on more, this is just what I have validated so far.
 | Distribution | Versions |
 |--------------|----------|
 | CentOS Stream | 9, 10 |
-| Rocky Linux | 8, 9 |
+| Rocky Linux | 8, 9, 10 |
 | AlmaLinux | 8, 9, 10 |
 | openSUSE Leap | 15.6 |
 | Debian | 11, 12, sid |
