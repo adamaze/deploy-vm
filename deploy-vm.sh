@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.4.0
+script_version=1.5.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -10,6 +10,7 @@ centos-stream9
 centos-stream10
 rocky8
 rocky9
+rocky10
 almalinux8
 almalinux9
 almalinux10
@@ -247,6 +248,15 @@ function cache_image() {
             OS_VARIANT="rocky9"
             IMAGE_URL="https://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2"
             IMAGE_CHECKSUM="$(curl --silent https://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2.CHECKSUM | tail -1 | awk '{print $NF}')"
+            ;;
+        rocky10)
+            OS_VARIANT="rocky10"
+            OS_VARIANT="$(osinfo-query os | grep '^ rocky10' | awk '{print $1}')"
+            if [[ -z $OS_VARIANT ]]; then
+                OS_VARIANT="$(osinfo-query os | grep ' Rocky Linux ' | sort -n -t\| -k3 | grep -v unknown | tail -1 | awk '{print $1}')"
+            fi
+            IMAGE_URL="https://dl.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2"
+            IMAGE_CHECKSUM="$(curl --silent https://dl.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2.CHECKSUM | tail -1 | awk '{print $NF}')"
             ;;
         almalinux8)
             OS_VARIANT="almalinux8"
