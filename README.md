@@ -18,7 +18,7 @@ I don't use this script professionally, so I may be doing some things here in a 
 |--------------|----------|
 | AlmaLinux | 8, 9 |  
 | CentOS Stream | 9, 10 |  
-| Fedora | 40, 41, 42 |  
+| Fedora | 41, 42 |  
 | Rocky Linux | 8, 9 |  
 
 It will likely work on more, this is just what I have validated so far.  
@@ -31,7 +31,7 @@ It will likely work on more, this is just what I have validated so far.
 | AlmaLinux | 8, 9, 10 |
 | openSUSE Leap | 15.6 |
 | Debian | 11, 12, sid |
-| Fedora | 40, 41, 42 |
+| Fedora | 41, 42 |
 | Ubuntu | 22.04, 24.04, 24.10, 25.04 |  
 
 [This Github Action](https://github.com/adamaze/deploy-vm/actions/workflows/cloud_image_health_check.yml) checks each image URL daily, and auto-creates an issue to report bad links, as distros occasionally change paths of where images are hosted.
