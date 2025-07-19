@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.5.0
+script_version=1.6.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -18,7 +18,6 @@ opensuse15-6
 debian11
 debian12
 debiansid
-fedora40
 fedora41
 fedora42
 ubuntu2204
@@ -305,14 +304,6 @@ function cache_image() {
             checksum_type=sha512
             ;;
         # for fedora and ubuntu, try to use the exact os name, but if that isnt there, just use the latest osinfo-query knows about
-        fedora40)
-            OS_VARIANT="$(osinfo-query os | grep '^ fedora40' | awk '{print $1}')"
-            if [[ -z $OS_VARIANT ]]; then
-                OS_VARIANT="$(osinfo-query os | grep ' Fedora Linux ' | sort -n -t\| -k3 | tail -1 | awk '{print $1}')"
-            fi
-            IMAGE_URL="https://fedora.mirror.constant.com/fedora/linux/releases/40/Cloud/x86_64/images/Fedora-Cloud-Base-Generic.x86_64-40-1.14.qcow2"
-            IMAGE_CHECKSUM="$(curl --silent https://fedora.mirror.constant.com/fedora/linux/releases/40/Cloud/x86_64/images/Fedora-Cloud-40-1.14-x86_64-CHECKSUM | grep $(basename $IMAGE_URL) | grep SHA256 | awk '{print $NF}')"
-            ;;
         fedora41)
             OS_VARIANT="$(osinfo-query os | grep '^ fedora41' | awk '{print $1}')"
             if [[ -z $OS_VARIANT ]]; then
