@@ -62,3 +62,9 @@ jobs:
               Please check the [Actions tab](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for the full report.`,
               labels: ['bad-link']
             })
+
+      - name: Fail workflow
+        if: env.FAILURES_FOUND == 'true'
+        run: |
+          echo "failing workflow due to broken URL"
+          exit 1
