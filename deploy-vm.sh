@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.6.0
+script_version=1.7.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -17,6 +17,7 @@ almalinux10
 opensuse15-6
 debian11
 debian12
+debian13
 debiansid
 fedora41
 fedora42
@@ -295,6 +296,15 @@ function cache_image() {
             OS_VARIANT="debian12"
             IMAGE_URL="http://cdimage.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2"
             IMAGE_CHECKSUM="$(curl --silent http://cdimage.debian.org/images/cloud/bookworm/latest/SHA512SUMS | grep $(basename $IMAGE_URL) | awk '{print $1}')"
+            checksum_type=sha512
+            ;;
+        debian13)
+            OS_VARIANT="$(osinfo-query os | grep debian13 | awk '{print $1}')"
+            if [[ -z $OS_VARIANT ]]; then
+                OS_VARIANT="$(osinfo-query os | grep debian | sort -n -t\| -k3 -r | head -1 | awk '{print $1}')"
+            fi
+            IMAGE_URL="http://cdimage.debian.org/images/cloud/trixie/latest/debian-13-generic-amd64.qcow2"
+            IMAGE_CHECKSUM="$(curl --silent http://cdimage.debian.org/images/cloud/trixie/latest/SHA512SUMS | grep $(basename $IMAGE_URL) | awk '{print $1}')"
             checksum_type=sha512
             ;;
         debiansid)

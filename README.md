@@ -30,7 +30,7 @@ It will likely work on more, this is just what I have validated so far.
 | Rocky Linux | 8, 9, 10 |
 | AlmaLinux | 8, 9, 10 |
 | openSUSE Leap | 15.6 |
-| Debian | 11, 12, sid |
+| Debian | 11, 12, 13, sid |
 | Fedora | 41, 42 |
 | Ubuntu | 22.04, 24.04, 24.10, 25.04 |  
 
