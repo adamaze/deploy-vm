@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.7.0
+script_version=1.7.1
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -281,8 +281,8 @@ function cache_image() {
             if [[ -z $OS_VARIANT ]]; then
                 OS_VARIANT="$(osinfo-query os | grep opensuse15 | sort -n -t\| -k3 -r | head -1 | awk '{print $1}')"
             fi
-            IMAGE_URL="https://mirror.rackspace.com/openSUSE/distribution/leap/15.6/appliances/openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2"
-            IMAGE_CHECKSUM="$(curl --silent https://mirror.rackspace.com/openSUSE/distribution/leap/15.6/appliances/openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2.sha256 | grep $(basename $IMAGE_URL) | awk '{print $1}')"
+            IMAGE_URL="https://download.opensuse.org/distribution/leap/15.6/appliances/openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2"
+            IMAGE_CHECKSUM="$(curl --silent https://download.opensuse.org/distribution/leap/15.6/appliances/openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2.sha256 | grep $(basename $IMAGE_URL) | awk '{print $1}')"
             ;;
         # we use the "generic" image for debian, as the "genericcloud" one doesnt have drivers for the cdrom drive cloud-init uses
         # https://salsa.debian.org/kernel-team/linux/-/merge_requests/699
