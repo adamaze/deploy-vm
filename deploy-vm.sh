@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.7.0
+script_version=1.7.1
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
