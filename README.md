@@ -13,16 +13,6 @@ When validating all distros, I can deploy one after the other and be done with t
 ### WARNING
 I don't use this script professionally, so I may be doing some things here in a non-ideal way... it happens to be working for me, so I'm running with it. If you think you can point out something I'm doing wrong, with an easy fix, or explanation, I'm all ears in the Issues tab
 
-## Supported OS for KVM host
-| Distribution | Versions |
-|--------------|----------|
-| AlmaLinux | 8, 9 |  
-| CentOS Stream | 9, 10 |  
-| Fedora | 41, 42 |  
-| Rocky Linux | 8, 9 |  
-
-It will likely work on more, this is just what I have validated so far.  
-
 ## Supported OS Versions
 | Distribution | Versions |
 |--------------|----------|
@@ -35,6 +25,15 @@ It will likely work on more, this is just what I have validated so far.
 | Ubuntu | 22.04, 24.04, 24.10, 25.04, 25.10 |  
 
 [This Github Action](https://github.com/adamaze/deploy-vm/actions/workflows/cloud_image_health_check.yml) checks each image URL daily, and auto-creates an issue to report bad links, as distros occasionally change paths of where images are hosted.
+## Supported OS for KVM host
+| Distribution | Versions |
+|--------------|----------|
+| AlmaLinux | 8, 9 |  
+| CentOS Stream | 9, 10 |  
+| Fedora | 41, 42 |  
+| Rocky Linux | 8, 9 |  
+
+It will likely work on more, this is just what I have validated so far.  
 ## Usage
 
 ### Basic
