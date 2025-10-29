@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.9.0
+script_version=1.10.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -15,6 +15,7 @@ almalinux8
 almalinux9
 almalinux10
 opensuse15-6
+opensuse16-0
 debian11
 debian12
 debian13
@@ -285,6 +286,14 @@ function cache_image() {
             fi
             IMAGE_URL="https://download.opensuse.org/distribution/leap/15.6/appliances/openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2"
             IMAGE_CHECKSUM="$(curl --silent https://download.opensuse.org/distribution/leap/15.6/appliances/openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2.sha256 | grep $(basename $IMAGE_URL) | awk '{print $1}')"
+            ;;
+        opensuse16-0)
+            OS_VARIANT="$(osinfo-query os | grep opensuse16.0 | awk '{print $1}')"
+            if [[ -z $OS_VARIANT ]]; then
+                OS_VARIANT="$(osinfo-query os | grep opensuse15 | sort -n -t\| -k3 -r | head -1 | awk '{print $1}')"
+            fi
+            IMAGE_URL="https://download.opensuse.org/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2"
+            IMAGE_CHECKSUM="$(curl --silent https://download.opensuse.org/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2.sha256 | grep $(basename $IMAGE_URL) | awk '{print $1}')"
             ;;
         # we use the "generic" image for debian, as the "genericcloud" one doesnt have drivers for the cdrom drive cloud-init uses
         # https://salsa.debian.org/kernel-team/linux/-/merge_requests/699
