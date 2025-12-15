@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.11.0
+script_version=1.12.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -27,9 +27,8 @@ ubuntu2204
 ubuntu2404
 ubuntu2504
 ubuntu2510
+arch
 "
-# currently unsupported:
-# arch
 #
 # FUNCTIONS
 #
@@ -380,11 +379,11 @@ function cache_image() {
             IMAGE_URL="https://cloud-images.ubuntu.com/releases/questing/release/ubuntu-25.10-server-cloudimg-amd64.img"
             IMAGE_CHECKSUM="$(curl --silent https://cloud-images.ubuntu.com/releases/questing/release/SHA256SUMS | grep $(basename $IMAGE_URL)| awk '{print $1}')"
             ;;
-        #arch)
-        #    OS_VARIANT="archlinux"
-        #    IMAGE_URL="https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2"
-        #    IMAGE_CHECKSUM="$(curl --silent https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2.SHA256 | awk '{print $1}')"
-        #    ;;
+        arch)
+            OS_VARIANT="archlinux"
+            IMAGE_URL="https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2"
+            IMAGE_CHECKSUM="$(curl --silent https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2.SHA256 | awk '{print $1}')"
+            ;;
         *)
             echo See supported OS list:
             echo "$supported_os_list"
