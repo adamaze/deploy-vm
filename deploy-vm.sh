@@ -25,7 +25,6 @@ fedora42
 fedora43
 ubuntu2204
 ubuntu2404
-ubuntu2410
 ubuntu2504
 ubuntu2510
 "
@@ -364,14 +363,6 @@ function cache_image() {
             fi
             IMAGE_URL="https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-24.04-server-cloudimg-amd64.img"
             IMAGE_CHECKSUM="$(curl --silent https://cloud-images.ubuntu.com/releases/noble/release/SHA256SUMS | grep $(basename $IMAGE_URL)| awk '{print $1}')"
-            ;;
-        ubuntu2410)
-            OS_VARIANT="$(osinfo-query os | grep '^ ubuntu24.10' | awk '{print $1}')"
-            if [[ -z $OS_VARIANT ]]; then
-                OS_VARIANT="$(osinfo-query os | grep '^ ubuntu' | sort -n -t\| -k3 | tail -1 | awk '{print $1}')"
-            fi
-            IMAGE_URL="https://cloud-images.ubuntu.com/releases/oracular/release/ubuntu-24.10-server-cloudimg-amd64.img"
-            IMAGE_CHECKSUM="$(curl --silent https://cloud-images.ubuntu.com/releases/oracular/release/SHA256SUMS | grep $(basename $IMAGE_URL)| awk '{print $1}')"
             ;;
         ubuntu2504)
             OS_VARIANT="$(osinfo-query os | grep '^ ubuntu25.04' | awk '{print $1}')"
