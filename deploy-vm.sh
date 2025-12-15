@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.10.0
+script_version=1.11.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -532,7 +532,7 @@ fi
 check_required_commands
 load_settings
 #
-while getopts ":h:c:r:d:o:ylV" o; do
+while getopts ":h:c:r:d:p:o:ylV" o; do
     case "${o}" in
         h)
             hostname_to_build=${OPTARG}
@@ -545,6 +545,9 @@ while getopts ":h:c:r:d:o:ylV" o; do
             ;;
         d)
             disk_size=${OPTARG}
+            ;;
+        p) # path
+            VM_IMAGE_DIR=${OPTARG}
             ;;
         o)
             os=${OPTARG}
