@@ -21,7 +21,7 @@ I don't use this script professionally, so I may be doing some things here in a 
 | AlmaLinux | 8, 9, 10 |
 | openSUSE Leap | 15.6, 16.0 |
 | Debian | 11, 12, 13, sid |
-| Fedora | 41, 42, 43 |
+| Fedora | 42, 43 |
 | Ubuntu | 22.04, 24.04, 25.04, 25.10 |  
 | Arch | latest |  
 
