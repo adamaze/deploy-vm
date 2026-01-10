@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.13.0
+script_version=1.13.1
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -122,7 +122,6 @@ user_data_file=
 }
 function load_settings() {
     . $var_file
-    mkdir -p "$VM_IMAGE_DIR"/{images,init,base}
     # validate SSH keys
     if [[ ! -e $ssh_pub_key_file ]] && [[ -z $github_user ]]; then
     	echo "ssh_pub_key_file: $ssh_pub_key_file does not exist, and \$github_user is not set"
@@ -549,6 +548,7 @@ while getopts ":h:c:r:d:p:o:ylV" o; do
     esac
 done
 shift $((OPTIND-1))
+mkdir -p "$VM_IMAGE_DIR"/{images,init,base}
 #
 if [[ $list == "true" ]]; then
     echo "$supported_os_list"
