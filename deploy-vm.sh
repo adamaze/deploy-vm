@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.13.1
+script_version=1.14.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -27,6 +27,7 @@ ubuntu2404
 ubuntu2504
 ubuntu2510
 arch
+alpine3-23
 "
 #
 # FUNCTIONS
@@ -227,6 +228,8 @@ function validate_input() {
 function cache_image() {
     mkdir -p $VM_IMAGE_DIR/base
     checksum_type=sha256
+    shell="/bin/bash"
+    sudo_group="sudo"
     case "$os" in
         centos-stream9)
             OS_VARIANT="centos-stream9"
@@ -320,7 +323,7 @@ function cache_image() {
             IMAGE_CHECKSUM="$(curl --silent http://cdimage.debian.org/images/cloud/sid/daily/latest/SHA512SUMS | grep $(basename $IMAGE_URL) | awk '{print $1}')"
             checksum_type=sha512
             ;;
-        # for fedora and ubuntu, try to use the exact os name, but if that isnt there, just use the latest osinfo-query knows about
+        # for fedora, ubuntu, and alpine try to use the exact os name, but if that isnt there, just use the latest osinfo-query knows about
         fedora42)
             OS_VARIANT="$(osinfo-query os | grep '^ fedora42' | awk '{print $1}')"
             if [[ -z $OS_VARIANT ]]; then
@@ -373,6 +376,20 @@ function cache_image() {
             OS_VARIANT="archlinux"
             IMAGE_URL="https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2"
             IMAGE_CHECKSUM="$(curl --silent https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2.SHA256 | awk '{print $1}')"
+            ;;
+        alpine3-23)
+            OS_VARIANT="$(osinfo-query os | grep '^ alpinelinux3.23 ' | awk '{print $1}')"
+            if [[ -z $OS_VARIANT ]]; then
+                OS_VARIANT="$(osinfo-query os | grep '^ alpinelinux' | sort -V | tail -1 | awk '{print $1}')"
+            fi
+            IMAGE_URL="https://dl-cdn.alpinelinux.org/alpine/v3.23/releases/cloud/nocloud_alpine-3.23.2-x86_64-bios-cloudinit-r0.qcow2"
+            IMAGE_CHECKSUM="$(curl --silent ${IMAGE_URL}.sha512)"
+            checksum_type=sha512
+            shell="/bin/sh"
+            sudo_group="wheel"
+            # https://git.alpinelinux.org/aports/tree/community/cloud-init/README.Alpine?id=2eb6a8206c0af444b70e7ed2d8c3778f3fe82d6a#n379
+            cloud_init_users_custom="passwd: '*'
+    lock_passwd: false"
             ;;
         *)
             echo See supported OS list:
@@ -433,9 +450,10 @@ EOF
 users:
   - name: $user
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
-    groups: sudo
-    shell: /bin/bash
+    groups: $sudo_group 
+    shell: $shell
     homedir: /home/$user
+    $cloud_init_users_custom
     ssh_authorized_keys:
 EOF
 
