@@ -22,8 +22,9 @@ I don't use this script professionally, so I may be doing some things here in a 
 | openSUSE Leap | 15.6, 16.0 |
 | Debian | 11, 12, 13, sid |
 | Fedora | 42, 43 |
-| Ubuntu | 22.04, 24.04, 25.04, 25.10 |  
-| Arch | latest |  
+| Ubuntu | 22.04, 24.04, 25.04, 25.10 |
+| Arch | latest |
+| Alpine Linux | 3.23 |
 
 [This Github Action](https://github.com/adamaze/deploy-vm/actions/workflows/cloud_image_health_check.yml) checks each image URL daily, and auto-creates an issue to report bad links, as distros occasionally change paths of where images are hosted.
 ## Supported OS for KVM host
