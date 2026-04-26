@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.14.0
+script_version=1.15.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -26,6 +26,7 @@ ubuntu2204
 ubuntu2404
 ubuntu2504
 ubuntu2510
+ubuntu2604
 arch
 alpine3-23
 "
@@ -371,6 +372,14 @@ function cache_image() {
             fi
             IMAGE_URL="https://cloud-images.ubuntu.com/releases/questing/release/ubuntu-25.10-server-cloudimg-amd64.img"
             IMAGE_CHECKSUM="$(curl --silent https://cloud-images.ubuntu.com/releases/questing/release/SHA256SUMS | grep $(basename $IMAGE_URL)| awk '{print $1}')"
+            ;;
+        ubuntu2604)
+            OS_VARIANT="$(osinfo-query os | grep '^ ubuntu26.04' | awk '{print $1}')"
+            if [[ -z $OS_VARIANT ]]; then
+                OS_VARIANT="$(osinfo-query os | grep '^ ubuntu' | sort -n -t\| -k3 | tail -1 | awk '{print $1}')"
+            fi
+            IMAGE_URL="https://cloud-images.ubuntu.com/releases/resolute/release/ubuntu-26.04-server-cloudimg-amd64.img"
+            IMAGE_CHECKSUM="$(curl --silent https://cloud-images.ubuntu.com/releases/resolute/release/SHA256SUMS | grep $(basename $IMAGE_URL)| awk '{print $1}')"
             ;;
         arch)
             OS_VARIANT="archlinux"

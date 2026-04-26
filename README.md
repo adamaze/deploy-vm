@@ -22,7 +22,7 @@ I don't use this script professionally, so I may be doing some things here in a 
 | openSUSE Leap | 15.6, 16.0 |
 | Debian | 11, 12, 13, sid |
 | Fedora | 42, 43 |
-| Ubuntu | 22.04, 24.04, 25.04, 25.10 |
+| Ubuntu | 22.04, 24.04, 25.04, 25.10, 26.04 |
 | Arch | latest |
 | Alpine Linux | 3.23 |
 
@@ -47,7 +47,7 @@ This will create a VM named "my-new-vm" using the default settings specified in 
 
 ### Advanced
 ```bash
-./deploy-vm.sh -h my-new-vm -c 4 -r 8 -d 50 -o ubuntu2404 -y
+./deploy-vm.sh -h my-new-vm -c 4 -r 8 -d 50 -o ubuntu2604 -y
 ```
 
 This creates a VM named "my-new-vm" with:
