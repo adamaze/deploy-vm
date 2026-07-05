@@ -20,7 +20,6 @@ debian11
 debian12
 debian13
 debiansid
-fedora42
 fedora43
 fedora44
 ubuntu2204
@@ -326,14 +325,6 @@ function cache_image() {
             checksum_type=sha512
             ;;
         # for fedora, ubuntu, and alpine try to use the exact os name, but if that isnt there, just use the latest osinfo-query knows about
-        fedora42)
-            OS_VARIANT="$(osinfo-query os | grep '^ fedora42' | awk '{print $1}')"
-            if [[ -z $OS_VARIANT ]]; then
-                OS_VARIANT="$(osinfo-query os | grep ' Fedora Linux ' | sort -n -t\| -k3 | tail -1 | awk '{print $1}')"
-            fi
-            IMAGE_URL="https://fedora.mirror.constant.com/fedora/linux/releases/42/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-42-1.1.x86_64.qcow2"
-            IMAGE_CHECKSUM="$(curl --silent https://fedora.mirror.constant.com/fedora/linux/releases/42/Cloud/x86_64/images/Fedora-Cloud-42-1.1-x86_64-CHECKSUM | grep $(basename $IMAGE_URL) | grep SHA256 | awk '{print $NF}')"
-            ;;
         fedora43)
             OS_VARIANT="$(osinfo-query os | grep '^ fedora43' | awk '{print $1}')"
             if [[ -z $OS_VARIANT ]]; then
