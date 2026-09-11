@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.16.0
+script_version=1.17.1
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -16,7 +16,6 @@ almalinux9
 almalinux10
 opensuse15-6
 opensuse16-0
-debian11
 debian12
 debian13
 debiansid
@@ -297,12 +296,6 @@ function cache_image() {
             ;;
         # we use the "generic" image for debian, as the "genericcloud" one doesnt have drivers for the cdrom drive cloud-init uses
         # https://salsa.debian.org/kernel-team/linux/-/merge_requests/699
-        debian11)
-            OS_VARIANT="debian11"
-            IMAGE_URL="http://cdimage.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2"
-            IMAGE_CHECKSUM="$(curl --silent http://cdimage.debian.org/images/cloud/bullseye/latest/SHA512SUMS | grep $(basename $IMAGE_URL) | awk '{print $1}')"
-            checksum_type=sha512
-            ;;
         debian12)
             OS_VARIANT="debian12"
             IMAGE_URL="http://cdimage.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2"
