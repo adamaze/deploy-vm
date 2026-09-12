@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/adamaze/deploy-vm
-script_version=1.17.1
+script_version=1.18.0
 #
 # Vars
 var_file=~/.config/deploy-vm/default.vars
@@ -98,7 +98,7 @@ function ask() {
 #
 function usage() {
     echo "deploy-vm version $script_version"
-    echo "Usage: $0 -h hostname_to_build | [-c cpu_core_count] [-r ram_in_GB] [-d disk_size] [-o os]" 1>&2
+    echo "Usage: $0 -h hostname_to_build | [-c cpu_core_count] [-r ram_in_GB] [-d disk_size] [-o os] [-i ip_address/mask] [-g gateway] [-n nameserver]" 1>&2
     echo "  -l   List avilable OS versions." 1>&2
     echo "  -F   Skip the y/n prompt when deploying." 1>&2
     echo "  -V   Show version" 1>&2
@@ -115,6 +115,7 @@ ram=2048
 cpu=2
 disk_size=20
 os=rocky9
+network_type=DHCP
 ssh_pub_key_file=
 BRIDGE=br0
 github_user=
@@ -224,6 +225,14 @@ function validate_input() {
             echo "$validation_errors validation error${errors_plural} found. exiting..."
             exit 1
     fi
+	# Check static IP requirements
+	if [[ -n "$ip_address" || -n "$gateway" || -n "$nameserver" ]]; then
+	    if [[ -z "$ip_address" || -z "$gateway" || -z "$nameserver" ]]; then
+                echo "ERROR: If configuring a static IP, you must provide all of: ip_address/mask (-i), gateway (-g), and nameserver (-n)."
+	        ((validation_errors++))
+	    fi
+		network_type="static ip: $ip_address gateway: $gateway nameserver: $nameserver"
+	fi
 }
 function cache_image() {
     mkdir -p $VM_IMAGE_DIR/base
@@ -439,6 +448,35 @@ function create_disk() {
 }
 
 function create_cloud_init_iso() {
+    mac_address=$(generate_mac_address)
+	# Create the cloud-init network-config file
+    echo "Creating network-config file $VM_IMAGE_DIR/init/network-config"
+    cat <<EOF > $VM_IMAGE_DIR/init/network-config
+version: 2
+ethernets:
+  eth0:
+EOF
+
+    # If static IP is provided, use it; otherwise default to DHCP
+    if [[ -n "$ip_address" ]]; then
+        cat <<EOF >> $VM_IMAGE_DIR/init/network-config
+    dhcp4: false
+    match:
+      macaddress: "$mac_address"
+    set-name: eth0
+    addresses:
+      - $ip_address
+    routes:
+      - to: 0.0.0.0/0
+        via: $gateway
+    nameservers:
+      addresses: [$nameserver]
+EOF
+    else
+        cat <<EOF >> $VM_IMAGE_DIR/init/network-config
+    dhcp4: true
+EOF
+    fi
     echo "Creating meta-data file $VM_IMAGE_DIR/init/meta-data"
     cat > "$VM_IMAGE_DIR/init/meta-data" << EOF
 instance-id: ${hostname_to_build}
@@ -492,7 +530,7 @@ EOF
             -volid cidata \
             -rational-rock \
             -joliet \
-            user-data meta-data $user_data_file_path 2>&1)
+            user-data meta-data network-config $user_data_file_path 2>&1)
     )
 }
 #
@@ -500,7 +538,7 @@ function virt_install() {
     echo Running virt-install
     virt-install \
         --name="${hostname_to_build}" \
-        --network "bridge=${BRIDGE},model=virtio" \
+        --network "bridge=${BRIDGE},model=virtio,mac=$mac_address" \
         --import \
         --disk "path=$vm_image_file,format=qcow2" \
         --disk "path=$VM_IMAGE_DIR/images/${hostname_to_build}-cidata.img,device=cdrom" \
@@ -527,12 +565,15 @@ if [[ ! -e $var_file ]]; then
     # if no var file exists, create it with the defaults
     set_defaults
 fi
+function generate_mac_address() {
+    printf '52:54:00:%02x:%02x:%02x\n' $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256))
+}
 #
 ################################################
 check_required_commands
 load_settings
 #
-while getopts ":h:c:r:d:p:o:ylV" o; do
+while getopts ":h:c:r:d:i:g:n:p:o:ylV" o; do
     case "${o}" in
         h)
             hostname_to_build=${OPTARG}
@@ -545,6 +586,15 @@ while getopts ":h:c:r:d:p:o:ylV" o; do
             ;;
         d)
             disk_size=${OPTARG}
+            ;;
+        i)
+            ip_address=${OPTARG}
+            ;;
+        g)
+            gateway=${OPTARG}
+            ;;
+        n)
+            nameserver=${OPTARG}
             ;;
         p) # path
             VM_IMAGE_DIR=${OPTARG}
@@ -587,13 +637,14 @@ fi
 #
 validate_input
 if [[ $force != "true" ]]; then
-    if ! ask "Are you sure you want to deply the following VM:
+    if ! ask "Are you sure you want to deploy the following VM:
     username: $user
     hostname: $hostname_to_build
     os: $os
     CPU cores: $cpu
     RAM (in GB): $(($ram/1024))
     disk size: $disk_size
+    network: $network_type
     "; then
         exit 2
     fi
