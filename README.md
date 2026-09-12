@@ -78,6 +78,9 @@ Deploy one of each supported OS
 - `-o` - OS to install (default: rocky9)
 - `-y` - Skip confirmation prompt
 - `-l` - List available OS options
+- `-i` - IP address (e.g. 10.0.0.25/24)
+- `-g` - gateway
+- `-n` - nameserver
 
 
 ## Configuration
@@ -94,6 +97,7 @@ ram=2048
 cpu=2
 disk_size=20
 os=rocky9
+network_type=DHCP
 ssh_pub_key_file=
 BRIDGE=br0
 user_data_file=/root/.config/create-vm/user-data.sh
